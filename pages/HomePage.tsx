@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Product } from '../types';
-import AdPlaceholder from '../components/AdPlaceholder';
-import ProductCard from '../components/ProductCard';
+import { Product } from '../types.ts';
+import AdPlaceholder from '../components/AdPlaceholder.tsx';
+import ProductCard from '../components/ProductCard.tsx';
 
 interface HomePageProps {
   products: Product[];

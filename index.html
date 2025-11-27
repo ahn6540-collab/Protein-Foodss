@@ -3,295 +3,394 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fit Meal Pick - 다이어트 도시락 비교</title>
+    <title>Fit Meal Pick - 맞춤 식단 비교</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <script type="importmap">
+    {
+      "imports": {
+        "react": "https://aistudiocdn.com/react@^19.2.0",
+        "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+        "react/": "https://aistudiocdn.com/react@^19.2.0/",
+        "react-router-dom": "https://aistudiocdn.com/react-router-dom@^7.9.6"
+      }
+    }
+    </script>
   </head>
-  <body class="bg-gray-50 text-gray-800 font-sans">
-    <!-- 상단 헤더 -->
-    <header class="bg-white shadow-sm sticky top-0 z-10">
+  <body class="bg-[#FFF7F2] text-gray-900 font-sans">
+    <!-- 상단 헤더 + 카테고리 바 -->
+    <header class="bg-white border-b border-orange-100 sticky top-0 z-20">
       <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
         <div class="flex items-center gap-2">
-          <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-500 text-white font-bold text-lg">F</span>
+          <span class="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-orange-500 text-white font-bold text-lg">F</span>
           <div class="flex flex-col">
             <span class="font-bold text-lg">Fit Meal Pick</span>
-            <span class="text-xs text-gray-500">다이어트 도시락 영양 · 가격 한 번에 비교</span>
+            <span class="text-xs text-gray-500">내 몸 상태에 맞는 영양 기준으로 식단 찾기</span>
           </div>
         </div>
-        <a href="#list" class="hidden sm:inline-flex px-4 py-2 rounded-full bg-emerald-500 text-white text-sm font-semibold hover:bg-emerald-600 transition">
-          도시락 비교하기
+        <a href="#list" class="hidden sm:inline-flex px-4 py-2 rounded-full bg-orange-500 text-white text-sm font-semibold hover:bg-orange-600 transition">
+          식단 비교하기
         </a>
       </div>
+
+      <!-- 상단 카테고리 바 -->
+      <nav class="border-t border-orange-100 bg-white">
+        <div class="max-w-5xl mx-auto px-4 overflow-x-auto">
+          <ul class="flex gap-4 text-sm py-2 whitespace-nowrap">
+            <li>
+              <button class="px-3 py-1 rounded-full bg-orange-500 text-white font-semibold text-xs">
+                식단 · 도시락
+              </button>
+            </li>
+            <li>
+              <button class="px-3 py-1 rounded-full text-gray-500 text-xs hover:bg-gray-100" disabled>
+                건강식품(준비중)
+              </button>
+            </li>
+            <li>
+              <button class="px-3 py-1 rounded-full text-gray-500 text-xs hover:bg-gray-100" disabled>
+                운동기구(준비중)
+              </button>
+            </li>
+            <li>
+              <button class="px-3 py-1 rounded-full text-gray-400 text-xs" disabled>
+                기타 카테고리(추가 예정)
+              </button>
+            </li>
+          </ul>
+        </div>
+      </nav>
     </header>
 
     <!-- 메인 영역 -->
-    <main class="max-w-5xl mx-auto px-4 pb-10 pt-6 space-y-8">
-      <!-- 히어로 -->
-      <section class="bg-gradient-to-r from-emerald-500 to-teal-500 text-white rounded-2xl p-6 sm:p-8 flex flex-col sm:flex-row gap-6 items-center">
-        <div class="flex-1 space-y-3">
-          <h1 class="text-2xl sm:text-3xl font-bold leading-tight">
-            단백질 · 칼로리 기준으로<br class="sm:hidden" />
-            다이어트 도시락을 한 번에 비교하세요
-          </h1>
-          <p class="text-sm sm:text-base text-emerald-50">
-            쿠팡 · 랭킹닭컴 · 네이버스토어에 흩어진 도시락들을 한 곳에서 모아
-            <span class="font-semibold">단백질, 칼로리, 당류, 가격</span> 기준으로 필터링하고 비교합니다.<br />
-            지금은 더미 데이터로 동작하는 베타(뼈대) 버전입니다.
-          </p>
-          <div class="flex flex-wrap gap-2 pt-2">
-            <a href="#list" class="inline-flex px-4 py-2 rounded-full bg-white text-emerald-600 font-semibold text-sm shadow-sm hover:bg-emerald-50">
-              지금 바로 비교하기
-            </a>
-            <span class="inline-flex items-center px-3 py-1 rounded-full bg-emerald-400/40 text-xs">
-              🔧 실시간 가격 연동은 추후 업데이트 예정
-            </span>
-          </div>
-        </div>
-        <div class="w-full sm:w-64 bg-white/10 rounded-xl p-4 border border-emerald-300/40">
-          <h2 class="text-sm font-semibold mb-2">단백질 높은 도시락 TOP 5 (더미)</h2>
-          <ul id="top-list" class="space-y-2 text-xs"></ul>
-        </div>
-      </section>
-
-      <!-- 필터 + 리스트 -->
-      <section id="list" class="grid grid-cols-1 md:grid-cols-[260px,1fr] gap-6 items-start">
-        <!-- 필터 영역 -->
-        <aside class="bg-white rounded-xl shadow-sm p-4 space-y-4">
-          <h2 class="font-semibold text-sm mb-1">필터</h2>
-
-          <!-- 영양 필터 -->
-          <div class="space-y-3">
-            <div>
-              <label for="proteinMin" class="block text-xs font-medium text-gray-700 mb-1">
-                단백질 최소(g)
-              </label>
-              <input
-                id="proteinMin"
-                type="number"
-                min="0"
-                step="5"
-                placeholder="예: 25"
-                class="w-full rounded-lg border-gray-300 text-sm focus:border-emerald-500 focus:ring-emerald-500"
-              />
+    <main class="max-w-5xl mx-auto px-4 pb-10 pt-6 space-y-6">
+      <!-- 히어로 + 체크리스트형 조건 선택 (텍스트 최소화) -->
+      <section class="bg-gradient-to-r from-orange-400 to-orange-500 rounded-2xl p-4 sm:p-6">
+        <!-- 상단 심플 헤더 -->
+        <div class="flex items-center justify-between mb-3">
+          <div class="flex items-center gap-2">
+            <div class="w-8 h-8 rounded-full bg-white/15 flex items-center justify-center">
+              <span class="text-white text-lg">🍱</span>
             </div>
-            <div class="grid grid-cols-2 gap-3">
-              <div>
-                <label for="calorieMax" class="block text-xs font-medium text-gray-700 mb-1">
-                  칼로리 최대(kcal)
-                </label>
+            <div>
+              <p class="text-xs text-orange-50/90">STEP 1</p>
+              <p class="text-sm sm:text-base font-semibold text-white">
+                지금 먹고 싶은<br class="sm:hidden" /> 식단 조건을 먼저 골라보세요
+              </p>
+            </div>
+          </div>
+          <span class="hidden sm:inline-flex px-3 py-1 rounded-full bg-white/10 text-[11px] text-orange-50 border border-white/20">
+            영양 기준 → 식단 추천
+          </span>
+        </div>
+
+        <!-- 체크리스트 카드 -->
+        <div class="bg-white text-gray-900 rounded-2xl p-4 sm:p-5 shadow-sm space-y-4">
+          <!-- 1. 식단 형태 -->
+          <div class="space-y-2">
+            <p class="text-xs font-semibold text-gray-800">
+              1. 식단 형태<span class="text-[10px] text-orange-500 ml-1">(복수 선택 가능)</span>
+            </p>
+            <div class="flex flex-wrap gap-2 text-xs">
+              <label class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-orange-200 bg-orange-50 cursor-pointer">
+                <input id="typeMeal" type="checkbox" class="rounded border-orange-300 text-orange-500 focus:ring-orange-500" />
+                <span>도시락</span>
+              </label>
+              <label class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-orange-200 bg-orange-50 cursor-pointer">
+                <input id="typeSalad" type="checkbox" class="rounded border-orange-300 text-orange-500 focus:ring-orange-500" />
+                <span>샐러드</span>
+              </label>
+              <label class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-orange-200 bg-orange-50 cursor-pointer">
+                <input id="typeProteinSingle" type="checkbox" class="rounded border-orange-300 text-orange-500 focus:ring-orange-500" />
+                <span>단백질 단품</span>
+              </label>
+              <label class="inline-flex items-center gap-1 px-3 py-1.5 rounded-full border border-orange-200 bg-orange-50 cursor-pointer">
+                <input id="typeEasy" type="checkbox" class="rounded border-orange-300 text-orange-500 focus:ring-orange-500" />
+                <span>간편식품</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- 2~5. 영양 범위 -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <!-- 단백질 -->
+            <div class="space-y-1">
+              <p class="font-semibold text-gray-800">2. 단백질(g)</p>
+              <div class="flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-lg px-2 py-1.5">
                 <input
-                  id="calorieMax"
+                  id="proteinMin"
                   type="number"
                   min="0"
-                  step="50"
-                  placeholder="예: 500"
-                  class="w-full rounded-lg border-gray-300 text-sm focus:border-emerald-500 focus:ring-emerald-500"
+                  step="5"
+                  placeholder="최소"
+                  class="w-full rounded-md border border-orange-200 bg-white px-2 py-1 text-xs focus:border-orange-500 focus:ring-orange-500"
+                />
+                <span class="text-gray-400 text-[11px]">~</span>
+                <input
+                  id="proteinMax"
+                  type="number"
+                  min="0"
+                  step="5"
+                  placeholder="최대"
+                  class="w-full rounded-md border border-orange-200 bg-white px-2 py-1 text-xs focus:border-orange-500 focus:ring-orange-500"
                 />
               </div>
-              <div>
-                <label for="sugarMax" class="block text-xs font-medium text-gray-700 mb-1">
-                  당류 최대(g)
-                </label>
+            </div>
+
+            <!-- 당류 -->
+            <div class="space-y-1">
+              <p class="font-semibold text-gray-800">3. 당류(g)</p>
+              <div class="flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-lg px-2 py-1.5">
+                <input
+                  id="sugarMin"
+                  type="number"
+                  min="0"
+                  step="1"
+                  placeholder="최소"
+                  class="w-full rounded-md border border-orange-200 bg-white px-2 py-1 text-xs focus:border-orange-500 focus:ring-orange-500"
+                />
+                <span class="text-gray-400 text-[11px]">~</span>
                 <input
                   id="sugarMax"
                   type="number"
                   min="0"
                   step="1"
-                  placeholder="예: 5"
-                  class="w-full rounded-lg border-gray-300 text-sm focus:border-emerald-500 focus:ring-emerald-500"
+                  placeholder="최대"
+                  class="w-full rounded-md border border-orange-200 bg-white px-2 py-1 text-xs focus:border-orange-500 focus:ring-orange-500"
+                />
+              </div>
+            </div>
+
+            <!-- 탄수화물 -->
+            <div class="space-y-1">
+              <p class="font-semibold text-gray-800">4. 탄수화물(g)</p>
+              <div class="flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-lg px-2 py-1.5">
+                <input
+                  id="carbMin"
+                  type="number"
+                  min="0"
+                  step="5"
+                  placeholder="최소"
+                  class="w-full rounded-md border border-orange-200 bg-white px-2 py-1 text-xs focus:border-orange-500 focus:ring-orange-500"
+                />
+                <span class="text-gray-400 text-[11px]">~</span>
+                <input
+                  id="carbMax"
+                  type="number"
+                  min="0"
+                  step="5"
+                  placeholder="최대"
+                  class="w-full rounded-md border border-orange-200 bg-white px-2 py-1 text-xs focus:border-orange-500 focus:ring-orange-500"
+                />
+              </div>
+            </div>
+
+            <!-- 총 칼로리 -->
+            <div class="space-y-1">
+              <p class="font-semibold text-gray-800">5. 총 칼로리(kcal)</p>
+              <div class="flex items-center gap-2 bg-orange-50 border border-orange-200 rounded-lg px-2 py-1.5">
+                <input
+                  id="calorieMin"
+                  type="number"
+                  min="0"
+                  step="50"
+                  placeholder="최소"
+                  class="w-full rounded-md border border-orange-200 bg-white px-2 py-1 text-xs focus:border-orange-500 focus:ring-orange-500"
+                />
+                <span class="text-gray-400 text-[11px]">~</span>
+                <input
+                  id="calorieMax"
+                  type="number"
+                  min="0"
+                  step="50"
+                  placeholder="최대"
+                  class="w-full rounded-md border border-orange-200 bg-white px-2 py-1 text-xs focus:border-orange-500 focus:ring-orange-500"
                 />
               </div>
             </div>
           </div>
 
-          <!-- 가격 필터 -->
-          <div class="space-y-2 pt-1 border-t border-gray-100">
-            <p class="text-xs font-medium text-gray-700">1팩 기준 가격(원)</p>
-            <div class="grid grid-cols-2 gap-2">
-              <input
-                id="priceMin"
-                type="number"
-                min="0"
-                step="500"
-                placeholder="최소"
-                class="w-full rounded-lg border-gray-300 text-sm focus:border-emerald-500 focus:ring-emerald-500"
-              />
-              <input
-                id="priceMax"
-                type="number"
-                min="0"
-                step="500"
-                placeholder="최대"
-                class="w-full rounded-lg border-gray-300 text-sm focus:border-emerald-500 focus:ring-emerald-500"
-              />
-            </div>
-          </div>
-
-          <!-- 쇼핑몰 필터 -->
-          <div class="space-y-1 pt-1 border-t border-gray-100">
-            <label for="mallFilter" class="block text-xs font-medium text-gray-700 mb-1">
-              쇼핑몰
-            </label>
-            <select
-              id="mallFilter"
-              class="w-full rounded-lg border-gray-300 text-sm focus:border-emerald-500 focus:ring-emerald-500"
-            >
-              <option value="all">전체</option>
-              <option value="쿠팡">쿠팡</option>
-              <option value="랭킹닭컴">랭킹닭컴</option>
-              <option value="네이버스토어">네이버스토어</option>
-            </select>
-          </div>
-
           <!-- 버튼 -->
-          <div class="flex gap-2 pt-1">
+          <div class="flex flex-wrap gap-2 pt-1">
             <button
               id="applyBtn"
-              class="flex-1 inline-flex justify-center items-center px-3 py-2 rounded-lg bg-emerald-500 text-white text-xs font-semibold hover:bg-emerald-600"
+              class="inline-flex flex-1 justify-center items-center px-4 py-2 rounded-lg bg-orange-500 text-white text-xs font-semibold hover:bg-orange-600"
             >
-              필터 적용
+              조건 적용해서 식단 보기
             </button>
             <button
               id="resetBtn"
-              class="px-3 py-2 rounded-lg border border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
+              class="inline-flex justify-center items-center px-4 py-2 rounded-lg border border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
             >
-              초기화
+              조건 초기화
             </button>
           </div>
-        </aside>
+        </div>
+      </section>
 
-        <!-- 리스트 영역 -->
-        <section class="space-y-3">
-          <!-- 정렬 -->
-          <div class="flex flex-wrap items-center justify-between gap-2">
-            <p class="text-xs text-gray-500">
-              더미 데이터 기준으로 동작하는 리스트입니다. (구조 확인용)
-            </p>
-            <div class="flex items-center gap-2">
-              <label for="sortBy" class="text-xs text-gray-600">정렬</label>
-              <select
-                id="sortBy"
-                class="rounded-lg border-gray-300 text-xs focus:border-emerald-500 focus:ring-emerald-500"
-              >
-                <option value="priceAsc">가격 낮은 순</option>
-                <option value="priceDesc">가격 높은 순</option>
-                <option value="proteinDesc">단백질 많은 순</option>
-                <option value="calorieAsc">칼로리 낮은 순</option>
-              </select>
-            </div>
+      <!-- 리스트 영역 (체크리스트 바로 아래) -->
+      <section class="space-y-3" id="list">
+        <!-- 설명 + 정렬 -->
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <p class="text-xs text-gray-600">
+            선택한 조건에 맞는 식단을 <span class="font-semibold text-orange-500">인기순(조회수)</span>으로 보여줍니다.
+          </p>
+          <div class="flex items-center gap-2">
+            <label for="sortBy" class="text-xs text-gray-600">정렬 기준</label>
+            <select
+              id="sortBy"
+              class="rounded-lg border-gray-300 text-xs focus:border-orange-500 focus:ring-orange-500"
+            >
+              <option value="popularityDesc">인기순(조회수)</option>
+              <option value="priceAsc">가격 낮은 순</option>
+              <option value="priceDesc">가격 높은 순</option>
+              <option value="proteinDesc">단백질 많은 순</option>
+              <option value="calorieAsc">칼로리 낮은 순</option>
+            </select>
           </div>
+        </div>
 
-          <!-- 카드 리스트 -->
-          <div id="productList" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-        </section>
+        <!-- 카드 리스트 -->
+        <div id="productList" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
       </section>
 
       <!-- 푸터 -->
-      <footer class="pt-4 border-t border-gray-200 text-xs text-gray-400">
-        <p>※ 현재 버전은 구조 확인과 기획 테스트용으로, 실제 가격·영양 정보와 다를 수 있습니다.</p>
+      <footer class="pt-4 border-t border-orange-100 text-xs text-gray-400">
+        <p>※ 현재 버전은 구조 및 콘셉트 테스트용으로, 실제 가격·영양 정보와 다를 수 있습니다.</p>
       </footer>
     </main>
 
     <!-- 자바스크립트: 더미 데이터 + 필터/정렬 로직 -->
     <script>
-      // 더미 상품 데이터
+      // 더미 상품 데이터 (식단 형태 + 탄수화물 + 지방 + 조회수)
       const products = [
         {
           id: 1,
+          type: "도시락",
           name: "헬스도시락 고단백 닭가슴살 볼 3종 세트",
           mall: "쿠팡",
           pricePerPack: 5900,
           pricePer100g: 2200,
           weightPerPack: 270,
           protein: 32,
+          carb: 40,
+          fat: 10,
           calorie: 450,
           sugar: 4,
+          views: 3200,
           imageUrl: "https://via.placeholder.com/300x200?text=Meal+1",
           detailUrl: "#",
           isSponsored: true
         },
         {
           id: 2,
+          type: "도시락",
           name: "다이어트 한끼 닭가슴살 귀리볼 도시락",
           mall: "랭킹닭컴",
           pricePerPack: 5300,
           pricePer100g: 2100,
           weightPerPack: 250,
           protein: 30,
+          carb: 38,
+          fat: 9,
           calorie: 420,
           sugar: 3,
+          views: 2800,
           imageUrl: "https://via.placeholder.com/300x200?text=Meal+2",
           detailUrl: "#",
           isSponsored: false
         },
         {
           id: 3,
+          type: "도시락",
           name: "저당 단백질 현미 닭가슴살 도시락",
           mall: "네이버스토어",
           pricePerPack: 6200,
           pricePer100g: 2300,
           weightPerPack: 260,
           protein: 34,
+          carb: 36,
+          fat: 8,
           calorie: 430,
           sugar: 2,
+          views: 3500,
           imageUrl: "https://via.placeholder.com/300x200?text=Meal+3",
           detailUrl: "#",
           isSponsored: false
         },
         {
           id: 4,
-          name: "탄단지 밸런스 치킨 스테이크 도시락",
+          type: "샐러드",
+          name: "탄단지 밸런스 치킨 스테이크 샐러드",
           mall: "쿠팡",
           pricePerPack: 5700,
           pricePer100g: 2150,
-          weightPerPack: 265,
+          weightPerPack: 230,
           protein: 28,
-          calorie: 480,
+          carb: 20,
+          fat: 7,
+          calorie: 380,
           sugar: 5,
-          imageUrl: "https://via.placeholder.com/300x200?text=Meal+4",
+          views: 2100,
+          imageUrl: "https://via.placeholder.com/300x200?text=Salad+1",
           detailUrl: "#",
           isSponsored: false
         },
         {
           id: 5,
-          name: "고단백 저지방 닭가슴살 야채볶음 도시락",
+          type: "단백질 단품",
+          name: "고단백 저지방 닭가슴살 스테이크(단품)",
           mall: "랭킹닭컴",
-          pricePerPack: 6100,
-          pricePer100g: 2250,
-          weightPerPack: 270,
-          protein: 35,
-          calorie: 440,
-          sugar: 3,
-          imageUrl: "https://via.placeholder.com/300x200?text=Meal+5",
+          pricePerPack: 3100,
+          pricePer100g: 2500,
+          weightPerPack: 130,
+          protein: 30,
+          carb: 5,
+          fat: 4,
+          calorie: 220,
+          sugar: 1,
+          views: 2600,
+          imageUrl: "https://via.placeholder.com/300x200?text=Protein+Single",
           detailUrl: "#",
           isSponsored: true
         },
         {
           id: 6,
-          name: "곤약볶음밥 닭가슴살 슬라이스 도시락",
+          type: "간편식품",
+          name: "곤약볶음밥 닭가슴살 슬라이스 주먹밥",
           mall: "네이버스토어",
           pricePerPack: 5200,
           pricePer100g: 2000,
           weightPerPack: 260,
           protein: 26,
+          carb: 45,
+          fat: 6,
           calorie: 390,
           sugar: 2,
-          imageUrl: "https://via.placeholder.com/300x200?text=Meal+6",
+          views: 1900,
+          imageUrl: "https://via.placeholder.com/300x200?text=Easy+Meal",
           detailUrl: "#",
           isSponsored: false
         }
       ];
 
       const productListEl = document.getElementById("productList");
-      const topListEl = document.getElementById("top-list");
+      const sortByEl = document.getElementById("sortBy");
+
+      // 체크리스트 요소들
+      const typeMealEl = document.getElementById("typeMeal");
+      const typeSaladEl = document.getElementById("typeSalad");
+      const typeProteinSingleEl = document.getElementById("typeProteinSingle");
+      const typeEasyEl = document.getElementById("typeEasy");
 
       const proteinMinEl = document.getElementById("proteinMin");
-      const calorieMaxEl = document.getElementById("calorieMax");
+      const proteinMaxEl = document.getElementById("proteinMax");
+      const sugarMinEl = document.getElementById("sugarMin");
       const sugarMaxEl = document.getElementById("sugarMax");
-      const priceMinEl = document.getElementById("priceMin");
-      const priceMaxEl = document.getElementById("priceMax");
-      const mallFilterEl = document.getElementById("mallFilter");
-      const sortByEl = document.getElementById("sortBy");
+      const carbMinEl = document.getElementById("carbMin");
+      const carbMaxEl = document.getElementById("carbMax");
+      const calorieMinEl = document.getElementById("calorieMin");
+      const calorieMaxEl = document.getElementById("calorieMax");
 
       const applyBtn = document.getElementById("applyBtn");
       const resetBtn = document.getElementById("resetBtn");
@@ -307,7 +406,7 @@
         productListEl.innerHTML = list
           .map((p) => {
             const badge = p.isSponsored
-              ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-semibold mr-2">SPONSORED</span>'
+              ? '<span class="inline-flex items-center px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-[10px] font-semibold mr-1">SPONSORED</span>'
               : "";
             return `
             <article class="bg-white rounded-xl shadow-sm overflow-hidden flex flex-col">
@@ -321,19 +420,23 @@
               </div>
               <div class="flex-1 p-3 flex flex-col gap-2">
                 <div>
-                  <p class="text-[11px] text-emerald-600 font-semibold">${p.mall}</p>
+                  <p class="text-[11px] text-orange-500 font-semibold">${p.type} · ${p.mall}</p>
                   <h3 class="text-sm font-semibold line-clamp-2">${badge}${p.name}</h3>
                 </div>
-                <div class="text-xs text-gray-600 grid grid-cols-2 gap-x-3 gap-y-1">
-                  <span>단백질 <span class="font-semibold text-gray-800">${p.protein}g</span></span>
-                  <span>칼로리 <span class="font-semibold text-gray-800">${p.calorie}kcal</span></span>
-                  <span>당류 <span class="font-semibold text-gray-800">${p.sugar}g</span></span>
-                  <span>중량 <span class="font-semibold text-gray-800">${p.weightPerPack}g</span></span>
+                <!-- 영양 정보: 요청 순서대로, 보기 좋게 묶어서 -->
+                <div class="mt-1 text-[11px] text-gray-700 space-y-0.5">
+                  <p>칼로리 <span class="font-semibold text-gray-900">${p.calorie}kcal</span></p>
+                  <p>탄수화물 <span class="font-semibold text-gray-900">${p.carb}g</span> · 단백질 <span class="font-semibold text-gray-900">${p.protein}g</span></p>
+                  <p>당류 <span class="font-semibold text-gray-900">${p.sugar}g</span> · 지방 <span class="font-semibold text-gray-900">${p.fat}g</span></p>
                 </div>
-                <div class="flex items-baseline justify-between">
+                <div class="flex items-baseline justify-between mt-2">
                   <p class="text-base font-bold">${p.pricePerPack.toLocaleString()}<span class="text-xs ml-0.5">원/팩</span></p>
                   <p class="text-[11px] text-gray-500">${p.pricePer100g.toLocaleString()}원 / 100g</p>
                 </div>
+                <p class="text-[10px] text-gray-400 flex justify-between items-center mt-0.5">
+                  <span>중량 ${p.weightPerPack}g 기준</span>
+                  <span>조회수 ${p.views.toLocaleString()}회</span>
+                </p>
                 <a href="${p.detailUrl}" class="mt-1 inline-flex justify-center items-center px-3 py-1.5 rounded-lg bg-gray-900 text-white text-xs font-semibold hover:bg-gray-800">
                   쇼핑몰로 가기
                 </a>
@@ -344,55 +447,46 @@
           .join("");
       }
 
-      // TOP 5 (단백질 기준) 렌더링
-      function renderTopList() {
-        const top = [...products]
-          .sort((a, b) => b.protein - a.protein)
-          .slice(0, 5);
-
-        topListEl.innerHTML = top
-          .map(
-            (p, idx) => `
-          <li class="flex items-center justify-between gap-2">
-            <div class="flex items-center gap-2">
-              <span class="w-5 text-[11px] font-semibold">${idx + 1}위</span>
-              <div class="flex flex-col">
-                <span class="text-[11px] font-medium line-clamp-1">${p.name}</span>
-                <span class="text-[10px] text-emerald-50/80">${p.mall} · ${p.protein}g · ${
-              p.calorie
-            }kcal</span>
-              </div>
-            </div>
-            <span class="text-[11px] font-semibold">${p.pricePerPack.toLocaleString()}원</span>
-          </li>
-        `
-          )
-          .join("");
-      }
-
       // 필터 적용
       function applyFilters() {
         let filtered = [...products];
 
+        // 선택된 식단 형태
+        const selectedTypes = [];
+        if (typeMealEl.checked) selectedTypes.push("도시락");
+        if (typeSaladEl.checked) selectedTypes.push("샐러드");
+        if (typeProteinSingleEl.checked) selectedTypes.push("단백질 단품");
+        if (typeEasyEl.checked) selectedTypes.push("간편식품");
+
         const proteinMin = Number(proteinMinEl.value) || 0;
-        const calorieMax = Number(calorieMaxEl.value) || Infinity;
+        const proteinMax = Number(proteinMaxEl.value) || Infinity;
+        const sugarMin = Number(sugarMinEl.value) || 0;
         const sugarMax = Number(sugarMaxEl.value) || Infinity;
-        const priceMin = Number(priceMinEl.value) || 0;
-        const priceMax = Number(priceMaxEl.value) || Infinity;
-        const mall = mallFilterEl.value;
+        const carbMin = Number(carbMinEl.value) || 0;
+        const carbMax = Number(carbMaxEl.value) || Infinity;
+        const calorieMin = Number(calorieMinEl.value) || 0;
+        const calorieMax = Number(calorieMaxEl.value) || Infinity;
 
         filtered = filtered.filter((p) => {
+          // 식단 형태 필터 (아무것도 체크 안 했으면 전체 허용)
+          if (selectedTypes.length && !selectedTypes.includes(p.type)) return false;
+
           if (p.protein < proteinMin) return false;
-          if (p.calorie > calorieMax) return false;
+          if (p.protein > proteinMax) return false;
+          if (p.sugar < sugarMin) return false;
           if (p.sugar > sugarMax) return false;
-          if (p.pricePerPack < priceMin) return false;
-          if (p.pricePerPack > priceMax) return false;
-          if (mall !== "all" && p.mall !== mall) return false;
+          if (p.carb < carbMin) return false;
+          if (p.carb > carbMax) return false;
+          if (p.calorie < calorieMin) return false;
+          if (p.calorie > calorieMax) return false;
+
           return true;
         });
 
         const sortBy = sortByEl.value;
-        if (sortBy === "priceAsc") {
+        if (sortBy === "popularityDesc") {
+          filtered.sort((a, b) => b.views - a.views);
+        } else if (sortBy === "priceAsc") {
           filtered.sort((a, b) => a.pricePerPack - b.pricePerPack);
         } else if (sortBy === "priceDesc") {
           filtered.sort((a, b) => b.pricePerPack - a.pricePerPack);
@@ -407,14 +501,22 @@
 
       // 필터 초기화
       function resetFilters() {
+        typeMealEl.checked = false;
+        typeSaladEl.checked = false;
+        typeProteinSingleEl.checked = false;
+        typeEasyEl.checked = false;
+
         proteinMinEl.value = "";
-        calorieMaxEl.value = "";
+        proteinMaxEl.value = "";
+        sugarMinEl.value = "";
         sugarMaxEl.value = "";
-        priceMinEl.value = "";
-        priceMaxEl.value = "";
-        mallFilterEl.value = "all";
-        sortByEl.value = "priceAsc";
-        renderProducts(products);
+        carbMinEl.value = "";
+        carbMaxEl.value = "";
+        calorieMinEl.value = "";
+        calorieMaxEl.value = "";
+
+        sortByEl.value = "popularityDesc";
+        applyFilters();
       }
 
       // 이벤트 바인딩
@@ -422,9 +524,8 @@
       resetBtn.addEventListener("click", resetFilters);
       sortByEl.addEventListener("change", applyFilters);
 
-      // 초기 렌더링
-      renderProducts(products);
-      renderTopList();
+      // 초기 렌더링 (기본: 인기순)
+      applyFilters();
     </script>
   </body>
 </html>

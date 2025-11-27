@@ -1,11 +1,11 @@
 import React, { useState, useCallback } from 'react';
 import { HashRouter, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import HomePage from './pages/HomePage';
-import ListPage from './pages/ListPage';
-import { INITIAL_PRODUCTS } from './data';
-import { Product } from './types';
+import Header from './components/Header.tsx';
+import Footer from './components/Footer.tsx';
+import HomePage from './pages/HomePage.tsx';
+import ListPage from './pages/ListPage.tsx';
+import { INITIAL_PRODUCTS } from './data.ts';
+import { Product } from './types.ts';
 
 function App() {
   const [products] = useState<Product[]>(INITIAL_PRODUCTS);

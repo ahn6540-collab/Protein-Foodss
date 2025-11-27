@@ -1,4 +1,4 @@
-import { Product } from './types';
+import { Product } from './types.ts';
 
 const MALLS = ['쿠팡', '랭킹닭컴', '네이버스토어'] as const;
 

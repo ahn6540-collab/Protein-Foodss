@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from 'react';
-import { Product, FilterState, SortOption } from '../types';
-import FilterSidebar from '../components/FilterSidebar';
-import ProductCard from '../components/ProductCard';
-import AdPlaceholder from '../components/AdPlaceholder';
+import { Product, FilterState, SortOption } from '../types.ts';
+import FilterSidebar from '../components/FilterSidebar.tsx';
+import ProductCard from '../components/ProductCard.tsx';
+import AdPlaceholder from '../components/AdPlaceholder.tsx';
 
 interface ListPageProps {
   products: Product[];
