@@ -7,73 +7,68 @@ interface ProductCardProps {
 }
 
 const ProductCard: React.FC<ProductCardProps> = ({ product, onClick }) => {
-  const handleLinkClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    onClick(product.id);
-    // In a real app, this would open window.open(product.detailUrl)
-  };
-
   return (
-    <div 
-      className="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow duration-200 overflow-hidden border border-gray-100 flex flex-col h-full cursor-pointer group"
+    <article 
+      className="bg-white rounded-2xl shadow-sm overflow-hidden flex flex-col border border-orange-50 hover:border-orange-200 transition-all cursor-pointer group"
       onClick={() => onClick(product.id)}
     >
-      <div className="relative overflow-hidden">
+      <div className="relative aspect-[4/3] overflow-hidden">
         <img 
           src={product.imageUrl} 
           alt={product.name} 
-          className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
-        {product.isSponsored && (
-          <span className="absolute top-2 right-2 bg-gray-800 text-white text-[10px] px-2 py-1 rounded">
-            AD
-          </span>
-        )}
-        <div className="absolute top-2 left-2 bg-white/90 backdrop-blur-sm text-gray-700 text-xs px-2 py-1 rounded font-medium shadow-sm">
+        <div className="absolute top-2 left-2 px-2 py-1 rounded-full bg-black/60 text-[10px] text-white backdrop-blur-sm">
           {product.mall}
         </div>
       </div>
 
-      <div className="p-4 flex flex-col flex-grow">
-        <h3 className="font-bold text-gray-800 text-lg mb-2 line-clamp-2 leading-tight">
-          {product.name}
-        </h3>
-        
-        <div className="flex items-center gap-2 mb-3 text-sm text-gray-500">
-          <span>{product.weightPerPack}g</span>
-          <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-          <span>{product.pricePer100g.toLocaleString()}원/100g</span>
+      <div className="flex-1 p-4 flex flex-col gap-2">
+        <div className="flex flex-col gap-1">
+          <h3 className="text-sm font-bold leading-snug line-clamp-2 h-10 text-gray-800">
+            {product.name}
+          </h3>
+          <p className="text-[11px] text-gray-500">
+            {product.weightPerPack}g ({product.pricePer100g.toLocaleString()}원/100g)
+          </p>
         </div>
 
-        <div className="grid grid-cols-3 gap-2 bg-gray-50 p-2 rounded-lg mb-4 text-center text-sm">
-          <div>
-            <div className="text-xs text-gray-500 mb-1">단백질</div>
-            <div className="font-bold text-emerald-600">{product.protein}g</div>
+        <div className="grid grid-cols-2 gap-x-3 gap-y-1.5 py-2 px-3 bg-orange-50/50 rounded-xl border border-orange-100/50">
+          <div className="flex justify-between items-center text-[11px]">
+            <span className="text-gray-500">탄수화물</span>
+            <span className="font-bold text-gray-800">{product.carb}g</span>
           </div>
-          <div className="border-x border-gray-200">
-            <div className="text-xs text-gray-500 mb-1">칼로리</div>
-            <div className="font-bold text-orange-500">{product.calorie}</div>
+          <div className="flex justify-between items-center text-[11px]">
+            <span className="text-gray-500">단백질</span>
+            <span className="font-bold text-orange-600">{product.protein}g</span>
           </div>
-          <div>
-            <div className="text-xs text-gray-500 mb-1">당류</div>
-            <div className="font-bold text-gray-600">{product.sugar}g</div>
+          <div className="flex justify-between items-center text-[11px]">
+            <span className="text-gray-500">지방</span>
+            <span className="font-bold text-gray-800">{product.fat}g</span>
+          </div>
+          <div className="flex justify-between items-center text-[11px]">
+            <span className="text-gray-500">칼로리</span>
+            <span className="font-bold text-gray-800">{product.calorie}kcal</span>
           </div>
         </div>
 
-        <div className="mt-auto flex items-center justify-between pt-3 border-t border-gray-100">
-          <div className="text-xl font-bold text-gray-900">
+        <div className="mt-auto pt-2 flex items-center justify-between">
+          <div className="text-lg font-extrabold text-gray-900">
             {product.pricePerPack.toLocaleString()}
-            <span className="text-sm font-normal text-gray-500 ml-1">원</span>
+            <span className="text-[11px] font-normal ml-0.5">원</span>
           </div>
           <button 
-            onClick={handleLinkClick}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white text-sm px-4 py-2 rounded-lg font-medium transition-colors"
+            className="px-4 py-1.5 rounded-full bg-orange-400 text-white text-[11px] font-bold hover:bg-orange-500 transition-colors"
+            onClick={(e) => {
+              e.stopPropagation();
+              onClick(product.id);
+            }}
           >
             구매하기
           </button>
         </div>
       </div>
-    </div>
+    </article>
   );
 };
 

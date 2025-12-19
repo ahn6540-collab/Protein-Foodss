@@ -7,170 +7,84 @@ interface FilterSidebarProps {
   totalCount: number;
 }
 
-const MALL_OPTIONS = ['쿠팡', '랭킹닭컴', '네이버스토어'];
-
 const FilterSidebar: React.FC<FilterSidebarProps> = ({ filters, setFilters, totalCount }) => {
   
-  const handleMallChange = (mall: string) => {
-    setFilters(prev => {
-      const newMalls = prev.selectedMalls.includes(mall)
-        ? prev.selectedMalls.filter(m => m !== mall)
-        : [...prev.selectedMalls, mall];
-      return { ...prev, selectedMalls: newMalls };
-    });
-  };
-
   const handleReset = () => {
     setFilters({
+      category: 'all',
       minProtein: 0,
-      maxCalorie: 1000,
+      maxProtein: 50,
+      minCarb: 0,
+      maxCarb: 80,
+      minFat: 0,
+      maxFat: 30,
+      minSugar: 0,
       maxSugar: 20,
-      minPrice: 0,
-      maxPrice: 15000,
-      maxPricePer100g: 5000,
-      selectedMalls: []
+      minCalorie: 0,
+      maxCalorie: 800
     });
   };
 
+  const updateRange = (field: keyof FilterState, value: number) => {
+    setFilters(prev => ({ ...prev, [field]: value }));
+  };
+
+  const RangeSlider = ({ label, minField, maxField, min, max, step = 1, unit = '' }: any) => (
+    <div className="space-y-2">
+      <div className="flex justify-between items-center">
+        <h3 className="text-[11px] font-bold text-gray-800">{label} ({unit})</h3>
+        <span className="text-[10px] text-orange-500 font-semibold bg-orange-50 px-2 py-0.5 rounded">
+          {filters[minField]} ~ {filters[maxField]}
+        </span>
+      </div>
+      <div className="space-y-1 bg-[#FFF7F2] border border-orange-100 rounded-xl px-3 py-2">
+        <div className="flex items-center gap-2">
+          <span className="w-8 text-[10px] text-gray-400">최소</span>
+          <input 
+            type="range" min={min} max={max} step={step} value={filters[minField]}
+            onChange={(e) => updateRange(minField, Number(e.target.value))}
+            className="w-full h-1.5 bg-orange-100 rounded-full appearance-none cursor-pointer accent-orange-400"
+          />
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="w-8 text-[10px] text-gray-400">최대</span>
+          <input 
+            type="range" min={min} max={max} step={step} value={filters[maxField]}
+            onChange={(e) => updateRange(maxField, Number(e.target.value))}
+            className="w-full h-1.5 bg-orange-100 rounded-full appearance-none cursor-pointer accent-orange-400"
+          />
+        </div>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm sticky top-4">
-      <div className="flex justify-between items-center mb-6">
-        <h2 className="font-bold text-lg text-gray-900">필터</h2>
+    <div className="bg-white p-5 rounded-2xl border border-orange-100 shadow-sm sticky top-20 flex flex-col gap-6">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="font-extrabold text-sm text-gray-900">Filters</h2>
+          <p className="text-[10px] text-gray-400">영양 성분별 맞춤 검색</p>
+        </div>
         <button 
           onClick={handleReset}
-          className="text-xs text-gray-500 underline hover:text-emerald-600"
+          className="text-[10px] text-gray-400 hover:text-orange-500 underline"
         >
           초기화
         </button>
       </div>
 
-      <div className="space-y-8">
-        {/* Mall Selection */}
-        <div>
-          <h3 className="text-sm font-bold text-gray-800 mb-3">쇼핑몰</h3>
-          <div className="space-y-2">
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input 
-                type="checkbox"
-                checked={filters.selectedMalls.length === 0}
-                onChange={() => setFilters(prev => ({ ...prev, selectedMalls: [] }))}
-                className="rounded text-emerald-600 focus:ring-emerald-500"
-              />
-              <span className="text-sm text-gray-600">전체</span>
-            </label>
-            {MALL_OPTIONS.map(mall => (
-              <label key={mall} className="flex items-center space-x-2 cursor-pointer">
-                <input 
-                  type="checkbox"
-                  checked={filters.selectedMalls.includes(mall)}
-                  onChange={() => handleMallChange(mall)}
-                  className="rounded text-emerald-600 focus:ring-emerald-500"
-                />
-                <span className="text-sm text-gray-600">{mall}</span>
-              </label>
-            ))}
-          </div>
-        </div>
-
-        {/* Protein Slider */}
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm font-bold text-gray-800">단백질 (최소)</h3>
-            <span className="text-xs font-medium text-emerald-600 bg-emerald-50 px-2 py-1 rounded">
-              {filters.minProtein}g 이상
-            </span>
-          </div>
-          <input 
-            type="range" 
-            min="0" 
-            max="50" 
-            value={filters.minProtein} 
-            onChange={(e) => setFilters(prev => ({ ...prev, minProtein: Number(e.target.value) }))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-          />
-        </div>
-
-        {/* Calorie Slider */}
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm font-bold text-gray-800">칼로리 (최대)</h3>
-            <span className="text-xs font-medium text-orange-600 bg-orange-50 px-2 py-1 rounded">
-              {filters.maxCalorie}kcal 이하
-            </span>
-          </div>
-          <input 
-            type="range" 
-            min="100" 
-            max="1000" 
-            step="10"
-            value={filters.maxCalorie} 
-            onChange={(e) => setFilters(prev => ({ ...prev, maxCalorie: Number(e.target.value) }))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-          />
-        </div>
-
-        {/* Sugar Slider */}
-        <div>
-          <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm font-bold text-gray-800">당류 (최대)</h3>
-            <span className="text-xs font-medium text-gray-600 bg-gray-100 px-2 py-1 rounded">
-              {filters.maxSugar}g 이하
-            </span>
-          </div>
-          <input 
-            type="range" 
-            min="0" 
-            max="20" 
-            value={filters.maxSugar} 
-            onChange={(e) => setFilters(prev => ({ ...prev, maxSugar: Number(e.target.value) }))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-          />
-        </div>
-
-        {/* Price Inputs */}
-        <div>
-          <h3 className="text-sm font-bold text-gray-800 mb-3">1팩 가격 (원)</h3>
-          <div className="flex items-center space-x-2">
-            <input 
-              type="number"
-              value={filters.minPrice}
-              onChange={(e) => setFilters(prev => ({ ...prev, minPrice: Number(e.target.value) }))}
-              placeholder="최소"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500"
-            />
-            <span className="text-gray-400">~</span>
-            <input 
-              type="number"
-              value={filters.maxPrice}
-              onChange={(e) => setFilters(prev => ({ ...prev, maxPrice: Number(e.target.value) }))}
-              placeholder="최대"
-              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500"
-            />
-          </div>
-        </div>
-
-        {/* Price per 100g */}
-        <div>
-           <div className="flex justify-between items-center mb-2">
-            <h3 className="text-sm font-bold text-gray-800">100g당 가격 (최대)</h3>
-            <span className="text-xs text-gray-500">{filters.maxPricePer100g.toLocaleString()}원</span>
-          </div>
-           <input 
-            type="range" 
-            min="500" 
-            max="5000" 
-            step="100"
-            value={filters.maxPricePer100g} 
-            onChange={(e) => setFilters(prev => ({ ...prev, maxPricePer100g: Number(e.target.value) }))}
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-          />
-        </div>
+      <div className="space-y-5">
+        <RangeSlider label="단백질" minField="minProtein" maxField="maxProtein" min={0} max={50} unit="g" />
+        <RangeSlider label="탄수화물" minField="minCarb" maxField="maxCarb" min={0} max={80} unit="g" />
+        <RangeSlider label="지방" minField="minFat" maxField="maxFat" min={0} max={30} unit="g" />
+        <RangeSlider label="당류" minField="minSugar" maxField="maxSugar" min={0} max={20} unit="g" />
+        <RangeSlider label="칼로리" minField="minCalorie" maxField="maxCalorie" min={0} max={800} step={10} unit="kcal" />
       </div>
-      
-      <div className="mt-6 pt-6 border-t border-gray-100 text-center">
-        <span className="text-sm text-gray-500">
-          검색 결과 <strong className="text-emerald-600">{totalCount}</strong>건
-        </span>
+
+      <div className="pt-4 border-t border-orange-50 text-center">
+        <p className="text-[11px] text-gray-500">
+          검색 결과 <strong className="text-orange-500">{totalCount}</strong>건
+        </p>
       </div>
     </div>
   );
